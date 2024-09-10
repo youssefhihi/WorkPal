@@ -7,6 +7,8 @@ import com.workPal.services.interfaces.MemberService;
 
 import java.sql.Connection;
 import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
@@ -43,12 +45,12 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Member getMemberByEmail(String email) {
-        return memberRepository.findMember(email);
+    public Optional<Member> getMemberById(UUID id) {
+        return memberRepository.findMember(id);
     }
 
     @Override
-    public Map<Integer, Member> getAllMembers() {
+    public Map<UUID, Member> getAllMembers() {
         return memberRepository.getAll();
     }
 }

@@ -2,6 +2,7 @@ package com.workPal.services.interfaces;
 
 import com.workPal.model.Manager;
 import java.util.Map;
+import java.util.UUID;
 
 public interface ManagerService {
 
@@ -9,9 +10,9 @@ public interface ManagerService {
 
     void updateManager(Manager manager);
 
-    void deleteManager(String email);
+    void deleteManager(UUID id);
 
     Manager getManagerByEmail(String email);
 
-    Map<Integer, Manager> getAllManagers();
+    Map<UUID, Manager> getAllManagers();
 }

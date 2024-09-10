@@ -1,17 +1,19 @@
 package com.workPal.controller;
 
+import com.workPal.connectDB.DatabaseConnection;
 import com.workPal.model.Member;
 import com.workPal.services.interfaces.MemberService;
+import com.workPal.services.serviceImpl.MemberServiceImpl;
 
+import java.sql.Connection;
 import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 public class MemberController {
-    private final MemberService memberService;
-
-    public MemberController(MemberService memberService) {
-        this.memberService = memberService;
-    }
-
+    private static final Connection connection = DatabaseConnection.connect();
+    private final MemberService memberService = new MemberServiceImpl(connection);
+    
     public void addMember(Member member) {
         memberService.addMember(member);
     }
@@ -24,11 +26,12 @@ public class MemberController {
         memberService.deleteMember(email);
     }
 
-    public Member getMemberByEmail(String email) {
-        return memberService.getMemberByEmail(email);
+    public Optional<Member> getMemberById(UUID id) {
+        return memberService.getMemberById(id);
     }
 
-    public Map<Integer, Member> getAllMembers() {
+    public Map<UUID, Member> getAllMembers() {
         return memberService.getAllMembers();
     }
+
 }

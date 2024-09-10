@@ -6,6 +6,7 @@ import com.workPal.repositories.repositoryImpl.ManagerImpl;
 import com.workPal.services.interfaces.ManagerService;
 import java.sql.Connection;
 import java.util.Map;
+import java.util.UUID;
 
 public class ManagerServiceImpl implements ManagerService {
     private final ManagerRepository managerRepository;
@@ -33,9 +34,9 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
     @Override
-    public void deleteManager(String email) {
+    public void deleteManager(UUID id) {
         try {
-            managerRepository.delete(email);
+            managerRepository.delete(id);
         } catch (Exception e) {
             System.out.println("Error deleting manager: " + e.getMessage());
         }
@@ -47,7 +48,7 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
     @Override
-    public Map<Integer, Manager> getAllManagers() {
+    public Map<UUID, Manager> getAllManagers() {
         return managerRepository.getAll();
     }
 }

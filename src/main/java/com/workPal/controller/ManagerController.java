@@ -4,6 +4,7 @@ import com.workPal.model.Manager;
 import com.workPal.services.interfaces.ManagerService;
 
 import java.util.Map;
+import java.util.UUID;
 
 public class ManagerController {
     private final ManagerService managerService;
@@ -20,15 +21,15 @@ public class ManagerController {
         managerService.updateManager(manager);
     }
 
-    public void deleteManager(String email) {
-        managerService.deleteManager(email);
+    public void deleteManager(UUID id) {
+        managerService.deleteManager(id);
     }
 
     public Manager getManagerByEmail(String email) {
         return managerService.getManagerByEmail(email);
     }
 
-    public Map<Integer, Manager> getAllManagers() {
+    public Map<UUID, Manager> getAllManagers() {
         return managerService.getAllManagers();
     }
 }

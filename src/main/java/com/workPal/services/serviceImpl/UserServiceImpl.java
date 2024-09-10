@@ -2,14 +2,17 @@ package com.workPal.services.serviceImpl;
 
 import com.workPal.model.User;
 import com.workPal.repositories.inteface.UserRepository;
+import com.workPal.repositories.repositoryImpl.UserImpl;
 import com.workPal.services.interfaces.UserService;
+
+import java.sql.Connection;
 import java.util.Optional;
 
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
-    public UserServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserServiceImpl(Connection connection) {
+        this.userRepository = new UserImpl(connection);
     }
 
     @Override
@@ -18,17 +21,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void forgetPassword(String email) {
-        userRepository.forgetPassword(email);
+    public Boolean forgetPassword(String email) {
+       return userRepository.forgetPassword(email);
+    }
+    @Override
+    public  Boolean  updatePassword(User user, String newPassword){
+        return userRepository.updatePassword(user,newPassword);
     }
 
-    @Override
-    public boolean validateToken(String email, String token) {
-        return userRepository.validateToken(email, token);
-    }
 
-    @Override
-    public boolean resetPassword(String email, String newPassword, String token) {
-        return userRepository.resetPassword(email, newPassword, token);
-    }
 }

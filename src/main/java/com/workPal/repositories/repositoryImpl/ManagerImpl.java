@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class ManagerImpl implements ManagerRepository {
     private final Connection connection;
@@ -41,7 +42,7 @@ public class ManagerImpl implements ManagerRepository {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, manager.getName());
             statement.setString(2, manager.getEmail());
-            statement.setInt(3, manager.getId());
+            statement.setString(3, manager.getId().toString());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Error in updating manager in ManagerImpl: " + e.getMessage());
@@ -49,11 +50,11 @@ public class ManagerImpl implements ManagerRepository {
     }
 
     @Override
-    public void delete(String email) {
+    public void delete(UUID id) {
         try {
-            String sql = "DELETE FROM managers WHERE email = ?";
+            String sql = "DELETE FROM managers WHERE id = ?";
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, email);
+            statement.setString(1, id.toString());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Error in deleting manager in ManagerImpl: " + e.getMessage());
@@ -70,7 +71,7 @@ public class ManagerImpl implements ManagerRepository {
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
                 manager = new Manager();
-                manager.setId(rs.getInt("id"));
+                manager.setId(UUID.fromString(rs.getString("id")));
                 manager.setName(rs.getString("name"));
                 manager.setEmail(rs.getString("email"));
                 manager.setPassword(rs.getString("password"));
@@ -82,15 +83,15 @@ public class ManagerImpl implements ManagerRepository {
     }
 
     @Override
-    public Map<Integer, Manager> getAll() {
-        Map<Integer, Manager> managers = new HashMap<>();
+    public Map<UUID, Manager> getAll() {
+        Map<UUID, Manager> managers = new HashMap<>();
         try {
             String sql = "SELECT * FROM managers";
             PreparedStatement statement = connection.prepareStatement(sql);
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
                 Manager manager = new Manager();
-                manager.setId(rs.getInt("id"));
+                manager.setId(UUID.fromString(rs.getString("id")));
                 manager.setName(rs.getString("name"));
                 manager.setEmail(rs.getString("email"));
                 manager.setPassword(rs.getString("password"));

@@ -27,11 +27,5 @@ public class UserUtility {
         return sb.toString();
     }
 
-    public static void main(String[] args) {
-
-        System.out.println("Random String: " + generateRandomString());
-    }
-
-
 
 }

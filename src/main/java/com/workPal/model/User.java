@@ -2,27 +2,28 @@ package com.workPal.model;
 
 import com.workPal.enums.Role;
 
+import java.util.UUID;
+
 public class User {
-    private  int id;
+    private UUID id;
     private String name;
     private String email;
     private String password;
     private Role role;
 
-    public User(int id, String name, String email, String password) {
+    public User(String name, String email, String password) {
         this.name = name;
         this.email = email;
         this.password = password;
-        this.id = id;
     }
     public User (){
 
     }
 
-    public int getId() {
+    public UUID getId() {
         return id;
     }
-    public void setId(int id){
+    public void setId(UUID id){
         this.id =id;
     }
 
@@ -49,5 +50,13 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Role getRole() {
+        return  role;
+    }
+
+    public void setRole(Role role){
+        this.role = role;
     }
 }

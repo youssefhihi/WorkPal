@@ -7,9 +7,7 @@ public interface UserService {
 
     Optional<User> login(String email, String password);
 
-    void forgetPassword(String email);
+    Boolean forgetPassword(String email);
 
-    boolean validateToken(String email, String token);
-
-    boolean resetPassword(String email, String newPassword, String token);
+    Boolean updatePassword(User user, String newPassword);
 }

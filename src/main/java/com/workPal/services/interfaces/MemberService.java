@@ -3,6 +3,8 @@ package com.workPal.services.interfaces;
 import com.workPal.model.Member;
 
 import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 public interface MemberService {
 
@@ -12,7 +14,7 @@ public interface MemberService {
 
     void deleteMember(String email);
 
-    Member getMemberByEmail(String email);
+    Optional<Member> getMemberById(UUID id);
 
-    Map<Integer, Member> getAllMembers();
+    Map<UUID, Member> getAllMembers();
 }

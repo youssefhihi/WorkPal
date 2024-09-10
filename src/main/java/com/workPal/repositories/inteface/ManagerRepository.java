@@ -1,12 +1,13 @@
 package com.workPal.repositories.inteface;
 import com.workPal.model.Manager;
 import java.util.Map;
+import java.util.UUID;
 
 public interface ManagerRepository {
 
     void save(Manager manager);
     Manager findManager(String email);
-    Map<Integer, Manager> getAll();
+    Map<UUID, Manager> getAll();
     void update(Manager manager);
-    void delete(String email);
+    void delete(UUID id);
 }
