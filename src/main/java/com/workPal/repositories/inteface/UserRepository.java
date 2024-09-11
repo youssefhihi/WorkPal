@@ -7,4 +7,5 @@ public interface UserRepository {
     Optional<User> login(String email, String password);
     boolean forgetPassword(String email);
     Boolean updatePassword(User user, String newPassword);
+    Optional<User> findUserByEmail(String email);
 }

@@ -22,8 +22,8 @@ public class UserImpl implements UserRepository {
     public UserImpl(Connection connection) {
         this.connection = connection;
     }
-
-    private Optional<User> findUserByEmail(String email) {
+    @Override
+    public Optional<User> findUserByEmail(String email) {
         try {
             String sql = "SELECT * FROM users WHERE email = ?";
             PreparedStatement statement = connection.prepareStatement(sql);

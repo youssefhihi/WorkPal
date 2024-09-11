@@ -1,8 +1,12 @@
 package com.workPal.utility.Validation;
 
+import com.workPal.controller.UserController;
+
+import java.sql.Connection;
 import java.util.regex.Pattern;
 
 public class UserValidation {
+    private  static UserController userController = new UserController();
 
     private static final Pattern EMAIL_PATTERN = Pattern.compile(
             "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
@@ -15,6 +19,11 @@ public class UserValidation {
     private static final Pattern PHONE_NUMBER_PATTERN = Pattern.compile(
             "^[567][0-9]{8}$"
     );
+
+
+    public static Boolean emailExist(String email){
+        return userController.findUserByEmail(email);
+    }
 
     /**
      * Validates the user's name.

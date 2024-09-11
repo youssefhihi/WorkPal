@@ -13,6 +13,7 @@ public class ViewUtility {
             scanner.nextLine();
         }catch (Exception e){
             scanner.nextLine();
+            choice = 0;
         }
         return  choice;
     }

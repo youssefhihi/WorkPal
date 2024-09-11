@@ -1,6 +1,7 @@
 package com.workPal.controller;
 
 import com.workPal.connectDB.DatabaseConnection;
+import com.workPal.model.Manager;
 import com.workPal.model.Member;
 import com.workPal.services.interfaces.MemberService;
 import com.workPal.services.serviceImpl.MemberServiceImpl;
@@ -22,8 +23,8 @@ public class MemberController {
         memberService.updateMember(member);
     }
 
-    public void deleteMember(String email) {
-        memberService.deleteMember(email);
+    public void deleteMember(UUID id) {
+        memberService.deleteMember(id);
     }
 
     public Optional<Member> getMemberById(UUID id) {
@@ -34,4 +35,9 @@ public class MemberController {
         return memberService.getAllMembers();
     }
 
+    public  Map<UUID, Member> searchMembers(String query){return memberService.searchMembers(query);}
+
+    public Optional<Member> getMemberByEmail(String email) {
+        return memberService.getMemberByEmail(email);
+    }
 }

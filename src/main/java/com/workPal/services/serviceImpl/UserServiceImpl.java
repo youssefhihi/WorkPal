@@ -24,10 +24,18 @@ public class UserServiceImpl implements UserService {
     public Boolean forgetPassword(String email) {
        return userRepository.forgetPassword(email);
     }
+
     @Override
     public  Boolean  updatePassword(User user, String newPassword){
         return userRepository.updatePassword(user,newPassword);
     }
+
+    @Override
+    public Boolean findUserByEmail(String email){
+        Optional<User> isFound = userRepository.findUserByEmail(email);
+        return isFound.isPresent();
+    }
+
 
 
 }

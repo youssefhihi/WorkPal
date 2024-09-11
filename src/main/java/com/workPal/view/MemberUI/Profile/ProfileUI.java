@@ -68,8 +68,8 @@ public class ProfileUI {
         String newEmail = scanner.nextLine();
         newEmail = newEmail.isEmpty() ? memberAuth.getEmail() : newEmail;
 
-        while (!UserValidation.isValidEmail(newEmail)) {
-            System.out.println("❗ Invalid email format. Please enter a valid email.");
+        while (!UserValidation.isValidEmail(newEmail) && UserValidation.emailExist(newEmail)) {
+            System.out.println("❗ Invalid email format or email already exist. Please enter a valid email.");
             System.out.print("📧 Re-enter your email: ");
             newEmail = scanner.nextLine();
             newEmail = newEmail.isEmpty() ? memberAuth.getEmail() : newEmail;
@@ -91,6 +91,7 @@ public class ProfileUI {
         memberAuth.setName(newName);
         memberAuth.setEmail(newEmail);
         memberAuth.setPhoneNumber(newPhoneNumber);
+        memberAuth.setPassword("");
 
         // Save changes using the update method
         memberController.updateMember(memberAuth);

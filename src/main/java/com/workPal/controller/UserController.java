@@ -18,11 +18,15 @@ public class UserController {
         return userService.login(email, password);
     }
 
-    public Boolean forgetPassword(String email) {
-       return userService.forgetPassword(email);
+    public void forgetPassword(String email) {
+        userService.forgetPassword(email);
     }
 
     public  Boolean  updatePassword(User user, String newPassword){
         return userService.updatePassword(user,newPassword);
+    }
+
+    public Boolean findUserByEmail(String email){
+        return  userService.findUserByEmail(email);
     }
 }

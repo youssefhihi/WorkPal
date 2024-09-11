@@ -3,10 +3,12 @@ package com.workPal.view.Auth;
 import com.workPal.controller.MemberController;
 import com.workPal.controller.UserController;
 import com.workPal.enums.Role;
+import com.workPal.model.Admin;
 import com.workPal.model.Member;
 import com.workPal.model.User;
 import com.workPal.utility.Validation.UserValidation;
 import com.workPal.utility.ViewUtility;
+import com.workPal.view.Admin.AdminMain;
 import com.workPal.view.MemberUI.MemberMain;
 
 import java.util.Optional;
@@ -78,10 +80,10 @@ public class Auth {
         while (true) {
             System.out.print("📧 Enter your email: ");
             email = scanner.nextLine();
-            if (UserValidation.isValidEmail(email)) {
+            if (UserValidation.isValidEmail(email) && UserValidation.emailExist(email)) {
                 break;
             }
-            System.out.println("Invalid email. Please enter a valid email address.");
+            System.out.println("Invalid email Or already used. Please enter a valid email address.");
         }
 
         // Validate password input
@@ -115,15 +117,19 @@ public class Auth {
             switch (user.getRole()) {
                 case admin:
                     System.out.println("👑 Role: Admin - You have administrative access.");
+                        Admin admin = new Admin(user.getName(), user.getEmail(), user.getPassword());
+                        AdminMain adminMain =  new AdminMain(admin);
+                        adminMain.runAdminUI();
                     break;
                 case manager:
                     System.out.println("📝 Role: Manager - You can manage resources.");
+
                     break;
                 case member:
                     System.out.println("👤 Role: Member - You have standard member access.");
-                   Optional<Member> member = memberController.getMemberById(user.getId());
-                   MemberMain memberMain =  new MemberMain(member.get());
-                   memberMain.runMain();
+                       Optional<Member> member = memberController.getMemberById(user.getId());
+                       MemberMain memberMain =  new MemberMain(member.get());
+                       memberMain.runMain();
                     break;
                 default:
                     System.out.println("⚠️ Unknown role. Access level is limited.");

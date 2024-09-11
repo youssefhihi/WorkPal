@@ -10,4 +10,7 @@ public interface UserService {
     Boolean forgetPassword(String email);
 
     Boolean updatePassword(User user, String newPassword);
+
+    Boolean findUserByEmail(String email);
+
 }

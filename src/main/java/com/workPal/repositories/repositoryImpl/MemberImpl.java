@@ -31,6 +31,7 @@ public class MemberImpl implements MemberRepository {
             String hashPassword = UserUtility.hashPassword(member.getPassword());
             statement.setString(3, hashPassword);
             statement.setString(4,member.getPhoneNumber());
+            System.out.println("dss" + member.getPhoneNumber());
             statement.setString(5, Role.member.name());
             statement.executeUpdate();
             System.out.println("✅ Registration successful! You can now log in."); ;
@@ -41,13 +42,26 @@ public class MemberImpl implements MemberRepository {
     }
     @Override
     public void update(Member member){
+        String passwordKey = member.getPassword().isEmpty() ? "" : ", password = ?";
+
         try{
-            String sql = "UPDATE members SET name = ? , email = ?, phoneNumber = ? WHERE id = ?::uuid";
+            String sql = "UPDATE members SET name = ? , email = ?, phoneNumber = ?" + passwordKey + " WHERE id = ?";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, member.getName());
             statement.setString(2, member.getEmail());
             statement.setString(3, member.getPhoneNumber());
-            statement.setString(4,member.getId().toString());
+            if (!passwordKey.isEmpty()) {
+                String hashedPassword;
+                try {
+                    hashedPassword = UserUtility.hashPassword(member.getPassword());
+                } catch (NoSuchAlgorithmException e) {
+                    throw new RuntimeException("Error hashing the password: " + e.getMessage(), e);
+                }
+                statement.setString(4, hashedPassword);
+                statement.setObject(5, member.getId());
+            } else {
+                statement.setObject(4, member.getId());
+            }
             statement.executeUpdate();
             System.out.println("✅ Profile updated successfully!");
         } catch (Exception e) {
@@ -56,11 +70,11 @@ public class MemberImpl implements MemberRepository {
 
     }
     @Override
-    public void delete (String email){
+    public void delete (UUID id){
         try{
-            String sql = "Delete FROM members WHERE email = ? ";
+            String sql = "Delete FROM members WHERE id = ? ";
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, email);
+            statement.setObject(1, id);
             statement.executeUpdate();
         } catch (SQLException e) {
                 throw new RuntimeException(e);
@@ -86,6 +100,29 @@ public class MemberImpl implements MemberRepository {
         }
         return  Optional.empty();
     }
+
+    @Override
+    public Optional<Member> findMember(String  email){
+        try{
+            String sql = "SELECT * FROM members WHERE email = ?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setObject(1, email);
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                Member member = new Member();
+                member.setId((UUID) rs.getObject("id"));
+                member.setName(rs.getString("name"));
+                member.setEmail(rs.getString("email"));
+                member.setPhoneNumber(rs.getString("phoneNumber"));
+                return Optional.of(member);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return  Optional.empty();
+    }
+
+
     @Override
     public Map<UUID, Member> getAll() {
             Map<UUID, Member> members = new HashMap<>();
@@ -99,6 +136,7 @@ public class MemberImpl implements MemberRepository {
                 member.setName(rs.getString("name"));
                 member.setEmail(rs.getString("email"));
                 member.setPassword(rs.getString("password"));
+                member.setPhoneNumber(rs.getString("phoneNumber"));
                 members.put(member.getId(),member);
             }
         } catch (SQLException e) {
@@ -108,4 +146,32 @@ public class MemberImpl implements MemberRepository {
     }
 
 
+    @Override
+    public Map<UUID, Member> searchMembers(String query) {
+        Map<UUID, Member> result = new HashMap<>();
+
+        try{
+            String sql = "SELECT * FROM members WHERE name ILIKE ? OR email ILIKE ? OR phoneNumber ILIKE ?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, "%" + query + "%");
+            statement.setString(2, "%" + query + "%");
+            statement.setString(3, "%" + query + "%");
+
+
+            try (ResultSet rs = statement.executeQuery()) {
+                while (rs.next()) {
+                    Member member = new Member();
+                    member.setId(UUID.fromString(rs.getString("id")));
+                    member.setName(rs.getString("name"));
+                    member.setEmail(rs.getString("email"));
+                    member.setPhoneNumber(rs.getString("phoneNumber"));
+                    result.put(member.getId(), member);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error in searching member: " + e.getMessage());
+        }
+
+        return result;
+    }
 }

@@ -8,7 +8,11 @@ public interface MemberRepository {
 
     void save(Member member);
     Optional<Member> findMember(UUID id);
+    Optional<Member> findMember(String email);
     Map<UUID, Member> getAll();
     void update(Member member);
-    void delete(String email);
+    void delete(UUID id);
+    Map<UUID, Member> searchMembers(String query);
+
+
 }

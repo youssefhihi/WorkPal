@@ -1,5 +1,6 @@
 package com.workPal.services.serviceImpl;
 
+import com.workPal.model.Manager;
 import com.workPal.model.Member;
 import com.workPal.repositories.inteface.MemberRepository;
 import com.workPal.repositories.repositoryImpl.MemberImpl;
@@ -36,9 +37,9 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void deleteMember(String email) {
+    public void deleteMember(UUID id) {
         try {
-            memberRepository.delete(email);
+            memberRepository.delete(id);
         } catch (Exception e) {
             System.out.println("Error deleting member: " + e.getMessage());
         }
@@ -52,5 +53,17 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public Map<UUID, Member> getAllMembers() {
         return memberRepository.getAll();
+    }
+
+    @Override
+    public Map<UUID, Member> searchMembers(String query){
+        return  memberRepository.searchMembers(query);
+
+    }
+
+    @Override
+    public Optional<Member> getMemberByEmail(String email) {
+        return memberRepository.findMember(email);
+
     }
 }
