@@ -1,11 +1,13 @@
 package com.workPal.model;
 
+import java.util.UUID;
+
 public class Type {
 
-        private int id;
+        private UUID id;
         private String name;
 
-        public Type(int id, String name) {
+        public Type(UUID id, String name) {
             this.id = id;
             this.name = name;
         }
@@ -13,11 +15,11 @@ public class Type {
         public Type() {}
 
         // Getters and Setters
-        public int getId() {
+        public UUID getId() {
             return id;
         }
 
-        public void setId(int id) {
+        public void setId(UUID id) {
             this.id = id;
         }
 

@@ -43,3 +43,21 @@ FOR EACH ROW EXECUTE FUNCTION enforce_unique_email();
 CREATE TRIGGER check_unique_email_managers
 BEFORE INSERT ON managers
 FOR EACH ROW EXECUTE FUNCTION enforce_unique_email();
+
+
+CREATE TABLE types (
+    id UUID DEFAULT gen_random_uuid(),
+    name VARCHAR(255) NOT NULL,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE spaces (
+    id UUID DEFAULT gen_random_uuid(),
+    name VARCHAR(255) UNIQUE NOT NULL,
+    description TEXT,
+    location VARCHAR(255),
+    capacity INT CHECK (capacity > 0),
+    type_id UUID,
+    PRIMARY KEY (id),
+    FOREIGN KEY (type_id) REFERENCES types(id)
+);

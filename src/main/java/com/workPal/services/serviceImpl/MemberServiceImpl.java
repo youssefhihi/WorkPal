@@ -1,8 +1,7 @@
 package com.workPal.services.serviceImpl;
 
-import com.workPal.model.Manager;
 import com.workPal.model.Member;
-import com.workPal.repositories.inteface.MemberRepository;
+import com.workPal.repositories.interfaces.MemberRepository;
 import com.workPal.repositories.repositoryImpl.MemberImpl;
 import com.workPal.services.interfaces.MemberService;
 

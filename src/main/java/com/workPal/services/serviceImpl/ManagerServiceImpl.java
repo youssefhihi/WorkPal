@@ -1,11 +1,10 @@
 package com.workPal.services.serviceImpl;
 
 import com.workPal.model.Manager;
-import com.workPal.repositories.inteface.ManagerRepository;
+import com.workPal.repositories.interfaces.ManagerRepository;
 import com.workPal.repositories.repositoryImpl.ManagerImpl;
 import com.workPal.services.interfaces.ManagerService;
 
-import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.util.Map;
 import java.util.Optional;

@@ -2,10 +2,9 @@ package com.workPal.repositories.repositoryImpl;
 
 import com.workPal.enums.Role;
 import com.workPal.model.Manager;
-import com.workPal.repositories.inteface.ManagerRepository;
+import com.workPal.repositories.interfaces.ManagerRepository;
 import com.workPal.utility.UserUtility;
 
-import java.lang.reflect.Field;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;

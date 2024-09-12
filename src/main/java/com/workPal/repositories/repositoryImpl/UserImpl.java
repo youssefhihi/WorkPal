@@ -2,16 +2,14 @@ package com.workPal.repositories.repositoryImpl;
 
 import com.workPal.enums.Role;
 import com.workPal.model.User;
-import com.workPal.repositories.inteface.UserRepository;
+import com.workPal.repositories.interfaces.UserRepository;
 import com.workPal.utility.Mails.JMailer;
 import com.workPal.utility.Mails.MailMsg;
 import com.workPal.utility.UserUtility;
 
-import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Optional;
 import java.util.UUID;
 

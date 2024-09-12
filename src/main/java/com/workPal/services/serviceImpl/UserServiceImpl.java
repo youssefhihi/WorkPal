@@ -1,7 +1,7 @@
 package com.workPal.services.serviceImpl;
 
 import com.workPal.model.User;
-import com.workPal.repositories.inteface.UserRepository;
+import com.workPal.repositories.interfaces.UserRepository;
 import com.workPal.repositories.repositoryImpl.UserImpl;
 import com.workPal.services.interfaces.UserService;
 

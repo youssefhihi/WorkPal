@@ -14,7 +14,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class ManagerController {
+
     private static final Connection connection = DatabaseConnection.connect();
+
     private final ManagerService managerService =new ManagerServiceImpl(connection);
 
     public void addManager(Manager manager) {
@@ -40,4 +42,5 @@ public class ManagerController {
     public  Map<UUID, Manager> searchManagers(String query){
         return managerService.searchManagers(query);
     }
+
 }

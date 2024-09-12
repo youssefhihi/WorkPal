@@ -4,11 +4,13 @@ import com.workPal.controller.MemberController;
 import com.workPal.controller.UserController;
 import com.workPal.enums.Role;
 import com.workPal.model.Admin;
+import com.workPal.model.Manager;
 import com.workPal.model.Member;
 import com.workPal.model.User;
 import com.workPal.utility.Validation.UserValidation;
 import com.workPal.utility.ViewUtility;
 import com.workPal.view.Admin.AdminMain;
+import com.workPal.view.ManagerUI.ManagerMain;
 import com.workPal.view.MemberUI.MemberMain;
 
 import java.util.Optional;
@@ -123,7 +125,9 @@ public class Auth {
                     break;
                 case manager:
                     System.out.println("📝 Role: Manager - You can manage resources.");
-
+                    Manager manager = new Manager(user.getName(), user.getEmail(), user.getPassword());
+                    ManagerMain managerMain =  new ManagerMain(manager);
+                    managerMain.runMain();
                     break;
                 case member:
                     System.out.println("👤 Role: Member - You have standard member access.");

@@ -1,4 +1,4 @@
-package com.workPal.repositories.inteface;
+package com.workPal.repositories.interfaces;
 import com.workPal.model.Member;
 import java.util.Map;
 import java.util.Optional;

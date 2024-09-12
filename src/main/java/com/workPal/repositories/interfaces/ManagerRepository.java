@@ -1,7 +1,6 @@
-package com.workPal.repositories.inteface;
+package com.workPal.repositories.interfaces;
 import com.workPal.model.Manager;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;

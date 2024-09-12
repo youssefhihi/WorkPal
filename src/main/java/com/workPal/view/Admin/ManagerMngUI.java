@@ -143,7 +143,7 @@ public class ManagerMngUI {
         }
 
         // Create a new Manager object with the provided details
-        Manager newManager = new Manager(name, email, password, Role.manager.name());
+        Manager newManager = new Manager(name, email, password);
 
        managerController.addManager(newManager);
 

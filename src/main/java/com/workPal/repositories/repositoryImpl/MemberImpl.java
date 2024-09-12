@@ -2,7 +2,7 @@ package com.workPal.repositories.repositoryImpl;
 
 import com.workPal.enums.Role;
 import com.workPal.model.Member;
-import com.workPal.repositories.inteface.MemberRepository;
+import com.workPal.repositories.interfaces.MemberRepository;
 import com.workPal.utility.UserUtility;
 
 import java.security.NoSuchAlgorithmException;
