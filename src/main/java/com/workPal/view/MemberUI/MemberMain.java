@@ -38,6 +38,7 @@ public class MemberMain {
                 case 4:
                     break;
                 case 5:
+                    new SpaceUi(memberAuth).spaceUIMain();
                     break;
                 default:
                     System.out.println("❗ Invalid choice. Please select a valid option from the menu.");

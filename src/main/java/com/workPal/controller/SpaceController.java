@@ -1,6 +1,7 @@
 package com.workPal.controller;
 
 import com.workPal.connectDB.DatabaseConnection;
+import com.workPal.model.Manager;
 import com.workPal.model.Space;
 import com.workPal.services.interfaces.SpaceService;
 import com.workPal.services.serviceImpl.SpaceServiceImpl;
@@ -18,12 +19,12 @@ public class SpaceController {
         spaceService.addSpace(space);
     }
 
-    public void updateSpace(Space space) {
-        spaceService.updateSpace(space);
+    public void updateSpace(Space space, Manager manager) {
+        spaceService.updateSpace(space,manager);
     }
 
-    public void deleteSpace(UUID id) {
-        spaceService.deleteSpace(id);
+    public void deleteSpace(Space space, Manager manager) {
+        spaceService.deleteSpace(space, manager);
     }
 
     public Optional<Space> getSpaceByName(String name) {

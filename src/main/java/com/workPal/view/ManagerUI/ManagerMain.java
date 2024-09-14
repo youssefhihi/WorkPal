@@ -20,7 +20,7 @@ public class ManagerMain {
             System.out.println("➔ [1] 🔧 Profile Management");
             System.out.println("➔ [2] 🏢 Space Management");
             System.out.println("➔ [3] 📅 Events Management");
-            System.out.println("➔ [4] 🌍 Discover Co-Working Spaces");
+            System.out.println("➔ [4] 🌍 Subscription Management");
             System.out.println("➔ [5] 🚪 Logout");
             choice = ViewUtility.enterChoice(choice);
             switch (choice) {
@@ -34,7 +34,7 @@ public class ManagerMain {
                     eventManagement();
                     break;
                 case 4:
-                    discoverSpaces();
+                    subscriptionManagement();
                     break;
                 case 5:
                     logout();
@@ -61,9 +61,8 @@ public class ManagerMain {
         System.out.println("Event Management feature is under construction.");
     }
 
-    public void discoverSpaces() {
-        // Implement discover co-working spaces logic here
-        System.out.println("Discover Co-Working Spaces feature is under construction.");
+    public void subscriptionManagement() {
+       new SubscriptionUI(managerAuth).subscriptionMain();
     }
 
     public void logout() {

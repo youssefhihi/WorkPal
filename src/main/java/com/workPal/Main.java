@@ -6,10 +6,7 @@ import com.workPal.model.User;
 import com.workPal.utility.UserUtility;
 import com.workPal.view.Auth.Auth;
 
-import java.lang.reflect.*;
 import java.security.NoSuchAlgorithmException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 

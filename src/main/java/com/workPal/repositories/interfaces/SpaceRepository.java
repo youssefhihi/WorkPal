@@ -1,5 +1,6 @@
 package com.workPal.repositories.interfaces;
 
+import com.workPal.model.Manager;
 import com.workPal.model.Space;
 
 import java.util.Map;
@@ -14,4 +15,6 @@ public interface SpaceRepository {
         Boolean update(Space space);
         Boolean delete(UUID id);
         Map<UUID, Space> searchSpaces(String query);
+        Optional<Space> findSpaceByID(UUID id);
+        Map<UUID, Space> getManagerSpaces(Manager manager);
 }

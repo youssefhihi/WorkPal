@@ -61,3 +61,45 @@ CREATE TABLE spaces (
     PRIMARY KEY (id),
     FOREIGN KEY (type_id) REFERENCES types(id)
 );
+
+CREATE TABLE space_service (
+    space_id UUID NOT NULL,
+    service_id UUID NOT NULL,
+    PRIMARY KEY (space_id, service_id),
+    FOREIGN KEY (space_id) REFERENCES spaces(id) ON DELETE CASCADE,
+    FOREIGN KEY (service_id) REFERENCES services(id) ON DELETE CASCADE
+
+);
+CREATE TABLE services (
+	id UUID DEFAULT gen_random_uuid(),
+	 name VARCHAR(255) UNIQUE NOT NULL,
+    price INT,
+	PRIMARY KEY (id)
+);
+
+CREATE TABLE subscriptions (
+    id UUID PRIMARY KEY DEFAULT  gen_random_uuid(),
+    duration INT NOT NULL,
+    durationType VARCHAR(50) NOT NULL,
+    member_id UUID NOT NULL,
+    startDate VARCHAR(30) NOT NULL,
+    space_id UUID NOT NULL,
+    FOREIGN KEY (member_id) REFERENCES members(id) ON DELETE CASCADE,
+    FOREIGN KEY (space_id) REFERENCES spaces(id) ON DELETE CASCADE
+);
+ALTER TABLE members
+ADD CONSTRAINT pk_members_id PRIMARY KEY (id);
+
+CREATE TABLE subscription_services (
+    subscription_id UUID NOT NULL,
+    service_id UUID NOT NULL,
+    PRIMARY KEY (subscription_id, service_id),
+    FOREIGN KEY (subscription_id) REFERENCES subscriptions (id) ON DELETE CASCADE,
+    FOREIGN KEY (service_id) REFERENCES services(id) ON DELETE CASCADE
+
+);
+
+ALTER TABLE subscriptions
+ADD COLUMN accepted BOOLEAN DEFAULT FALSE;
+
+

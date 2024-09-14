@@ -18,4 +18,17 @@ public class ViewUtility {
         return  choice;
     }
 
+    public static void showLoading(String message) {
+        System.out.print(message);
+        try {
+            for (int i = 0; i < 3; i++) {
+                Thread.sleep(600);
+                System.out.print(".");
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println();
+    }
+
 }

@@ -1,7 +1,9 @@
 package com.workPal.view.ManagerUI;
 
+import com.workPal.controller.AdditionalServiceController;
 import com.workPal.controller.SpaceController;
 import com.workPal.controller.TypeController;
+import com.workPal.model.Service;
 import com.workPal.model.Manager;
 import com.workPal.model.Space;
 import com.workPal.model.Type;
@@ -14,6 +16,7 @@ public class SpaceUi {
     private static final Scanner scanner = new Scanner(System.in);
     private static final SpaceController spaceController = new SpaceController();
     private  static final TypeController typeController = new TypeController();
+    private static final AdditionalServiceController serviceController = new AdditionalServiceController();
 
     private Manager managerAuth;
     public SpaceUi(Manager manager){
@@ -47,6 +50,8 @@ public class SpaceUi {
                 case 5:
                     handleDeleteSpace();
                     break;
+                default:
+                    System.out.println("❗ Invalid choice. Please select a valid option from the menu.");
 
             }
         }while(choice != 7);
@@ -68,6 +73,10 @@ public class SpaceUi {
                 System.out.println("  Location :" + space.getLocation());
                 System.out.println("  Capacity :" + space.getCapacity());
                 System.out.println("  Type :" + space.getType().getName());
+                System.out.println("  Additional Services: ");
+                                for (Service service : space.getServices().values()) {
+                System.out.print("    -" + service.getName() );
+                                }
                 System.out.println("╚═══════════════════════════════════════════════════╝");
                 System.out.println(" ");
             }
@@ -93,6 +102,10 @@ public class SpaceUi {
                 System.out.println("  Location :" + space.getLocation());
                 System.out.println("  Capacity :" + space.getCapacity());
                 System.out.println("  Type :" + space.getType().getName());
+                System.out.println("  Additional Services: ");
+                for (Service service : space.getServices().values()) {
+                    System.out.print("    -" + service.getName() );
+                }
                 System.out.println("╚═══════════════════════════════════════════════════╝");
                 System.out.println(" ");
             }
@@ -104,6 +117,7 @@ public class SpaceUi {
     public void handleAddSpace() {
         System.out.println("\n===== 🏢 Add New Space 🏢 =====");
 
+        // Get and validate space name
         System.out.print("Enter the name of the space: ");
         String name = scanner.nextLine();
         while (!SpaceValidation.isValidName(name)) {
@@ -111,24 +125,24 @@ public class SpaceUi {
             name = scanner.nextLine();
         }
 
+        // Get and validate space description
         System.out.print("Enter the description of the space: ");
         String desc = scanner.nextLine();
         while (!SpaceValidation.isValidDesc(desc)) {
             System.out.print("❗ Invalid description. Please enter a valid space description: ");
-            desc = scanner.nextLine() ;
+            desc = scanner.nextLine();
         }
 
+        // Retrieve and select space type
         List<Type> types = typeController.getAllTypes();
         if (types.isEmpty()) {
             System.out.println("❗ No available types to assign. Please add types before adding a space.");
             return;
         }
-
         System.out.println("Available Types:");
         for (int i = 0; i < types.size(); i++) {
             System.out.println("[" + i + "] " + types.get(i).getName());
         }
-
         System.out.print("Select the type index for the space: ");
         int index = -1;
         Type selectedType = null;
@@ -141,19 +155,67 @@ public class SpaceUi {
             }
         }
 
-        // space location and validate
+        // Get and validate space location
         System.out.print("Enter the location of the space: ");
         String location = scanner.nextLine();
         while (!SpaceValidation.isValidLocation(location)) {
             System.out.print("❗ Invalid location. Please enter a valid location: ");
             location = scanner.nextLine();
         }
-        //  space location and validate
+
+        // Get and validate space capacity
         int capacity = 0;
-      capacity = SpaceValidation.isValidCapacity(capacity);
+        System.out.print("Enter the capacity of the space: ");
+        while (true) {
+            try {
+                capacity = Integer.parseInt(scanner.nextLine());
+                if (capacity >= 0) {
+                    break;
+                } else {
+                    System.out.print("❗ Invalid capacity. Please enter a valid capacity: ");
+                }
+            } catch (NumberFormatException e) {
+                System.out.print("❗ Invalid input. Please enter a number for the capacity: ");
+            }
+        }
 
+        // Retrieve available services
+        List<Service> services = serviceController.getAllServices();
+        if (services.isEmpty()) {
+            System.out.println("❗ No available services to assign. Please add services before adding a space.");
+            return;
+        }
+        System.out.println("Available Services:");
+        for (int i = 0; i < services.size(); i++) {
+            System.out.println("[" + i + "] " + services.get(i).getName());
+        }
 
-        Space newSpace = new Space(name,desc, capacity,location, selectedType);
+        Map<UUID, Service> selectedServices = new HashMap<>();
+        boolean validInput = false;
+        while(!validInput) {
+            System.out.println("Select the indices of the services to associate with the space (comma-separated):");
+            String[] indices = scanner.nextLine().split(",");
+            for (String indexStr : indices) {
+                try {
+                    int serviceIndex = Integer.parseInt(indexStr.trim());
+                    if (serviceIndex >= 0 && serviceIndex < services.size()) {
+                        Service selectedService = services.get(serviceIndex);
+                        selectedServices.put(selectedService.getId(), selectedService);
+                        validInput = true;
+                    } else {
+                        System.out.println("❗ Invalid service index: " + serviceIndex);
+                        validInput = false;
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("❗ Invalid input for service index: " + indexStr);
+                    validInput = false;
+                }
+            }
+        }
+
+        Space newSpace = new Space(name, desc, selectedType, location, capacity, managerAuth, selectedServices);
+
+        // Add the space through the controller
         spaceController.addSpace(newSpace);
     }
 
@@ -226,14 +288,47 @@ public class SpaceUi {
                     System.out.print("❗ Invalid input. Please enter a number corresponding to the type index: ");
                 }
             }
+            // Retrieve available services
+            List<Service> services = serviceController.getAllServices();
+            if (services.isEmpty()) {
+                System.out.println("❗ No available services to assign. Please add services before adding a space.");
+                return;
+            }
+            System.out.println("Available Services:");
+            for (int i = 0; i < services.size(); i++) {
+                System.out.println("[" + i + "] " + services.get(i).getName());
+            }
+            Map<UUID, Service> selectedServices = new HashMap<>();
+            boolean validInput = false;
+            while(!validInput) {
+                System.out.println("Select the indices of the services to associate with the space (comma-separated):");
+                String[] indices = scanner.nextLine().split(",");
+                for (String indexStr : indices) {
+                    try {
+                        int serviceIndex = Integer.parseInt(indexStr.trim());
+                        if (serviceIndex >= 0 && serviceIndex < services.size()) {
+                            Service selectedService = services.get(serviceIndex);
+                            selectedServices.put(selectedService.getId(), selectedService);
+                            validInput = true;
+                        } else {
+                            System.out.println("❗ Invalid service index: " + serviceIndex);
+                            validInput = false;
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("❗ Invalid input for service index: " + indexStr);
+                        validInput = false;
+                    }
+                }
+            }
             // Update space information
             space.setName(newName);
             space.setDescription(newDescription);
             space.setLocation(newLocation);
             space.setCapacity(newCapacity);
             space.setType(selectedType);
+            space.setServices(selectedServices);
 
-            spaceController.updateSpace(space);
+            spaceController.updateSpace(space,managerAuth);
         } else {
             System.out.println("❗ No space found with the provided name: " + name);
         }
@@ -265,7 +360,7 @@ public class SpaceUi {
             // Confirm deletion
             if (confirmation.equalsIgnoreCase("yes")) {
                 // Delete the space via the controller
-                spaceController.deleteSpace(space.getId());
+                spaceController.deleteSpace(space, managerAuth);
 
             } else {
                 System.out.println("❌ Deletion canceled. The manager was not deleted.");

@@ -82,7 +82,7 @@ public class Auth {
         while (true) {
             System.out.print("📧 Enter your email: ");
             email = scanner.nextLine();
-            if (UserValidation.isValidEmail(email) && UserValidation.emailExist(email)) {
+            if (UserValidation.isValidEmail(email) && !UserValidation.emailExist(email)) {
                 break;
             }
             System.out.println("Invalid email Or already used. Please enter a valid email address.");

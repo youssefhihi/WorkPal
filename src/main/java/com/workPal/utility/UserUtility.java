@@ -2,6 +2,7 @@ package com.workPal.utility;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.sql.SQLException;
 import java.util.Base64;
 import java.security.SecureRandom;
 
@@ -27,5 +28,9 @@ public class UserUtility {
         return sb.toString();
     }
 
+//    public static void main(String[] args) throws NoSuchAlgorithmException {
+//    String pa = null;
+//        System.out.println(" hh"+ UserUtility.hashPassword(pa));
+//    }
 
 }
