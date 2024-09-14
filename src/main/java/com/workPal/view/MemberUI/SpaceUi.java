@@ -29,6 +29,7 @@ public class SpaceUi {
             System.out.println("\n===== Welcome "+ memberAuth.getName()+"! to 🏢 Spaces Discovering 🏢 =====");
             System.out.println("➔ [1] 🏢 View All Spaces");
             System.out.println("➔ [2] 🔍 Search Space");
+            System.out.println("➔ [3] 🏢  Space Details");
             System.out.println("➔ [4] 🚪 Exit");
             choice = ViewUtility.enterChoice(choice);
             switch(choice){
@@ -66,6 +67,7 @@ public class SpaceUi {
                 for (Service service : space.getServices().values()) {
                     System.out.print("    -" + service.getName() );
                 }
+                System.out.println("\n");
                 System.out.println("╚═══════════════════════════════════════════════════╝");
                 System.out.println(" ");
             }
@@ -103,10 +105,9 @@ public class SpaceUi {
         }
     }
     private void handleDetailsSpace(){
-        System.out.print("🏢 Enter the name of the space to update: ");
+        System.out.print("🏢 Enter the name of the space to get details: ");
         String name = scanner.nextLine();
 
-        // Search for the space by name
         Optional<Space> spaceOptional = spaceController.getSpaceByName(name);
         if (spaceOptional.isPresent()) {
             Space space = spaceOptional.get();
