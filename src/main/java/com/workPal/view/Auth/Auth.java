@@ -126,6 +126,7 @@ public class Auth {
                 case manager:
                     System.out.println("📝 Role: Manager - You can manage resources.");
                     Manager manager = new Manager(user.getName(), user.getEmail(), user.getPassword());
+                    manager.setId(user.getId());
                     ManagerMain managerMain =  new ManagerMain(manager);
                     managerMain.runMain();
                     break;

@@ -1,6 +1,7 @@
 package com.workPal.controller;
 
 import com.workPal.connectDB.DatabaseConnection;
+import com.workPal.model.Manager;
 import com.workPal.model.Member;
 import com.workPal.model.Space;
 import com.workPal.model.Subscription;
@@ -40,8 +41,8 @@ public class SubscriptionController {
     public Optional<Subscription> getMemberSpaceSubscription(Subscription subscription) {
         return subscriptionService.getMemberSpace(subscription);
     }
-    public Map<UUID, Subscription> getSubscriptionNotAccepted(){
-        return subscriptionService.getSubscriptionNotAccepted();
+    public Map<UUID, Subscription> getSubscriptionNotAccepted(Manager manager){
+        return subscriptionService.getSubscriptionNotAccepted(manager);
     }
     public void  acceptSubscription(Subscription subscription){
         subscriptionService.acceptSubscription(subscription);

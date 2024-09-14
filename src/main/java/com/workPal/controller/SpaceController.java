@@ -38,4 +38,9 @@ public class SpaceController {
     public Map<UUID, Space> searchSpaces(String query) {
         return spaceService.searchSpaces(query);
     }
+
+    public Map<UUID, Space>getManagerSpaces(Manager manager){
+        return spaceService.getManagerSpaces(manager);
+    }
 }
+

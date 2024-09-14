@@ -61,7 +61,7 @@ public class SpaceUi {
 
     private void handleViewSpaces() {
         System.out.println("\n=== 🏢 View All Spaces ===");
-        Map<UUID, Space> spaces = spaceController.getAllSpaces();
+        Map<UUID, Space> spaces = spaceController.getManagerSpaces(managerAuth);
 
         if (spaces.isEmpty()) {
             System.out.println("⚠️ No spaces found.");

@@ -1,12 +1,14 @@
 package com.workPal.repositories.repositoryImpl;
 
 import com.workPal.model.Feedback;
+import com.workPal.model.Member;
+import com.workPal.model.Space;
 import com.workPal.repositories.interfaces.FeedbackRepository;
 import com.workPal.connectDB.DatabaseConnection;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class FeedbackImpl implements FeedbackRepository {
@@ -14,55 +16,91 @@ public class FeedbackImpl implements FeedbackRepository {
     private final Connection connection = DatabaseConnection.connect();
 
     @Override
-    public List<Feedback> getFeedbackForSpace(UUID spaceId) {
-        List<Feedback> feedbackList = new ArrayList<>();
-        String query = "SELECT * FROM feedbacks WHERE space_id = ?";
+    public Map<UUID, Feedback> getFeedbackForSpace(UUID spaceId) {
+        Map<UUID, Feedback> feedbackMap = new HashMap<>();
+        String query = """
+            SELECT f.id, f.comment, f.member_id, f.space_id, m.name AS member_name, s.name AS space_name
+            FROM feedbacks f
+            JOIN members m ON f.member_id = m.id
+            JOIN spaces s ON f.space_id = s.id
+            WHERE f.space_id = ?
+        """;
+
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setObject(1, spaceId);
             ResultSet rs = stmt.executeQuery();
+
             while (rs.next()) {
                 Feedback feedback = new Feedback();
-                feedback.setId(UUID.fromString(rs.getString("id")));
+                UUID feedbackId = UUID.fromString(rs.getString("id"));
+                feedback.setId(feedbackId);
                 feedback.setComment(rs.getString("comment"));
-                feedback.setMemberId(UUID.fromString(rs.getString("member_id")));
-                feedback.setSpaceId(UUID.fromString(rs.getString("space_id")));
-                feedbackList.add(feedback);
+
+                Member member = new Member();
+                member.setId(UUID.fromString(rs.getString("member_id")));
+                member.setName(rs.getString("member_name"));
+
+                Space space = new Space();
+                space.setId(UUID.fromString(rs.getString("space_id")));
+                space.setName(rs.getString("space_name"));
+
+                feedback.setMember(member);
+                feedback.setSpace(space);
+
+                feedbackMap.put(feedbackId, feedback);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return feedbackList;
+        return feedbackMap;
     }
 
     @Override
-    public List<Feedback> getFeedbackForMember(UUID memberId) {
-        List<Feedback> feedbackList = new ArrayList<>();
-        String query = "SELECT * FROM feedbacks WHERE member_id = ?";
+    public Map<UUID, Feedback> getFeedbackForMember(UUID memberId) {
+        Map<UUID, Feedback> feedbackMap = new HashMap<>();
+        String query = """
+            SELECT f.*, s.* , m.name AS member_name , m.email
+            FROM feedbacks f
+            JOIN spaces s ON f.space_id = s.id
+            JOIN members m ON f.member_id = m.id
+            WHERE f.member_id = ?
+        """;
+
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setObject(1, memberId);
             ResultSet rs = stmt.executeQuery();
+
             while (rs.next()) {
                 Feedback feedback = new Feedback();
                 feedback.setId(UUID.fromString(rs.getString("id")));
                 feedback.setComment(rs.getString("comment"));
-                feedback.setMemberId(UUID.fromString(rs.getString("member_id")));
-                feedback.setSpaceId(UUID.fromString(rs.getString("space_id")));
-                feedbackList.add(feedback);
+                Member member = new Member();
+                member.setId(UUID.fromString(rs.getString("member_id")));
+                member.setName(rs.getString("member_name"));
+                member.setEmail(rs.getString("email"));
+
+                Space space = new Space();
+                space.setId(UUID.fromString(rs.getString("space_id")));
+                space.setName(rs.getString("space_name"));
+
+                feedback.setMember(member);
+                feedback.setSpace(space);
+
+                feedbackMap.put(feedback.getId(), feedback);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return feedbackList;
+        return feedbackMap;
     }
 
     @Override
     public boolean addFeedback(Feedback feedback) {
-        String query = "INSERT INTO feedbacks (id, comment, member_id, space_id) VALUES (?, ?, ?, ?)";
+        String query = "INSERT INTO feedbacks (comment, member_id, space_id) VALUES (?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setObject(1, feedback.getId());
-            stmt.setString(2, feedback.getComment());
-            stmt.setObject(3, feedback.getMemberId());
-            stmt.setObject(4, feedback.getSpaceId());
+            stmt.setString(1, feedback.getComment());
+            stmt.setObject(2, feedback.getMember().getId());
+            stmt.setObject(3, feedback.getSpace().getId());
             int affectedRows = stmt.executeUpdate();
             return affectedRows > 0;
         } catch (SQLException e) {

@@ -55,7 +55,7 @@ public class SubscriptionUI {
 
     private void handleSubscriptionNotAccepted() {
         // Fetch subscriptions that have not been accepted
-        Map<UUID, Subscription> subscriptionMap = subscriptionController.getSubscriptionNotAccepted();
+        Map<UUID, Subscription> subscriptionMap = subscriptionController.getSubscriptionNotAccepted(managerAuth);
 
         // Check if there are any subscriptions to display
         if (subscriptionMap.isEmpty()) {

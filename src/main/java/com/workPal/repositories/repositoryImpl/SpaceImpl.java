@@ -118,18 +118,17 @@ public class SpaceImpl implements SpaceRepository {
         Map<UUID, Space> spaces = new HashMap<>();
         try {
             String sql = """
-                SELECT s.*, t.id AS type_id, t.name AS type_name
+                SELECT s.*, t.id AS type_id, t.name AS type_name,
                 managers.name AS manager_name , managers.email
                 FROM spaces s
                 JOIN types t ON s.type_id = t.id
-                JOIN managers s.manager_id = managers.id
+                JOIN managers ON s.manager_id = managers.id
                 """;
             PreparedStatement statement = connection.prepareStatement(sql);
             ResultSet rs = statement.executeQuery();
 
             while (rs.next()) {
                 Space space = mapResultSetToSpace(rs);
-                // Retrieve associated services for this space
                 space.setServices(getServicesForSpace(space.getId()));
                 spaces.put(space.getId(), space);
             }
@@ -144,11 +143,12 @@ public class SpaceImpl implements SpaceRepository {
         Map<UUID, Space> spaces = new HashMap<>();
         try {
             String sql = """
-                SELECT s.*, t.id AS type_id, t.name AS type_name
+                SELECT s.*, t.id AS type_id, t.name AS type_name,
                 managers.name AS manager_name , managers.email
                 FROM spaces s
                 JOIN types t ON s.type_id = t.id
-                JOIN managers s.manager_id = managers.id WHERE manager_id = ?
+                JOIN managers ON s.manager_id = managers.id 
+                WHERE manager_id = ?
                 """;
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setObject(1, manager.getId());

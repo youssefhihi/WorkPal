@@ -5,8 +5,8 @@ import java.util.UUID;
 public class Feedback {
     private UUID id;
     private String comment;
-    private UUID memberId;
-    private UUID spaceId;
+    private Member member;
+    private Space space;
 
     // Getters and Setters
     public UUID getId() {
@@ -25,19 +25,19 @@ public class Feedback {
         this.comment = comment;
     }
 
-    public UUID getMemberId() {
-        return memberId;
+    public Member getMember() {
+        return member;
     }
 
-    public void setMemberId(UUID memberId) {
-        this.memberId = memberId;
+    public void setMember(Member member) {
+        this.member = member;
     }
 
-    public UUID getSpaceId() {
-        return spaceId;
+    public Space getSpace() {
+        return space;
     }
 
-    public void setSpaceId(UUID spaceId) {
-        this.spaceId = spaceId;
+    public void setSpace(Space space) {
+        this.space = space;
     }
 }

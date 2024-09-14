@@ -6,6 +6,7 @@ import com.workPal.repositories.repositoryImpl.FeedbackImpl;
 import com.workPal.services.interfaces.FeedbackService;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class FeedbackServiceImpl implements FeedbackService {
@@ -13,12 +14,12 @@ public class FeedbackServiceImpl implements FeedbackService {
     private final FeedbackRepository feedbackRepository = new FeedbackImpl();
 
     @Override
-    public List<Feedback> getFeedbackForSpace(UUID spaceId) {
+    public Map<UUID, Feedback> getFeedbackForSpace(UUID spaceId) {
         return feedbackRepository.getFeedbackForSpace(spaceId);
     }
 
     @Override
-    public List<Feedback> getFeedbackForMember(UUID memberId) {
+    public Map<UUID, Feedback> getFeedbackForMember(UUID memberId) {
         return feedbackRepository.getFeedbackForMember(memberId);
     }
 

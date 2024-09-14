@@ -5,17 +5,18 @@ import com.workPal.services.interfaces.FeedbackService;
 import com.workPal.services.serviceImpl.FeedbackServiceImpl;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class FeedbackController {
 
     private final FeedbackService feedbackService = new FeedbackServiceImpl();
 
-    public List<Feedback> getFeedbackForSpace(UUID spaceId) {
+    public Map<UUID, Feedback> getFeedbackForSpace(UUID spaceId) {
         return feedbackService.getFeedbackForSpace(spaceId);
     }
 
-    public List<Feedback> getFeedbackForMember(UUID memberId) {
+    public Map<UUID, Feedback> getFeedbackForMember(UUID memberId) {
         return feedbackService.getFeedbackForMember(memberId);
     }
 

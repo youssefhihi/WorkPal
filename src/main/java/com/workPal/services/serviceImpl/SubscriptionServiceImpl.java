@@ -1,5 +1,6 @@
 package com.workPal.services.serviceImpl;
 
+import com.workPal.model.Manager;
 import com.workPal.model.Member;
 import com.workPal.model.Space;
 import com.workPal.model.Subscription;
@@ -74,7 +75,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         return subscriptionRepository.getMemberSpace(subscription);
     }
     @Override
-    public  Map<UUID, Subscription> getSubscriptionNotAccepted(){
-        return subscriptionRepository.getSubscriptionNotAccepted();
+    public  Map<UUID, Subscription> getSubscriptionNotAccepted(Manager manager){
+        return subscriptionRepository.getSubscriptionNotAccepted(manager);
     }
 }

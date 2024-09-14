@@ -52,46 +52,49 @@ public class SubscriptionImpl implements SubscriptionRepository {
         }
     }
     @Override
-    public Map<UUID, Subscription> getSubscriptionNotAccepted(){
-        try{
-            String sql =  """
-            SELECT
+    public Map<UUID, Subscription> getSubscriptionNotAccepted(Manager manager) {
+        try {
+            String sql = """
+        SELECT
             subscriptions.*,
-                    spaces.id AS space_id, spaces.name AS space_name, spaces.description, spaces.location, spaces.capacity,
-                    members.id AS member_id, members.name AS member_name, members.email, members.phoneNumber,
-                    managers.id AS manager_id, managers.name AS manager_name, managers.email,
-                    services.id AS service_id, services.name AS service_name, services.price AS service_price
-            FROM subscriptions
-            JOIN spaces ON subscriptions.space_id = spaces.id
-            JOIN members ON subscriptions.member_id = members.id
-            JOIN managers ON spaces.managers_id = managers.id
-            JOIN subscription_services ON subscriptions.id = subscription_services.subscription_id
-            JOIN services ON subscription_services.service_id = services.id 
-            WHERE accepted = 0 AND where spaces.manager_id = ?
-            """;
+            spaces.id AS space_id, spaces.name AS space_name, spaces.description, spaces.location, spaces.capacity,
+            members.id AS member_id, members.name AS member_name, members.email, members.phoneNumber,
+            managers.id AS manager_id, managers.name AS manager_name, managers.email,
+            services.id AS service_id, services.name AS service_name, services.price AS service_price
+        FROM subscriptions
+        JOIN spaces ON subscriptions.space_id = spaces.id
+        JOIN members ON subscriptions.member_id = members.id
+        JOIN managers ON spaces.manager_id = managers.id
+        JOIN subscription_services ON subscriptions.id = subscription_services.subscription_id
+        JOIN services ON subscription_services.service_id = services.id
+        WHERE accepted = false AND spaces.manager_id = ?
+        """;
+
             PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setObject(1, manager.getId());
             ResultSet rs = statement.executeQuery();
+
             Map<UUID, Subscription> subscriptionMap = new HashMap<>();
-            if (rs.next()) {
+            while (rs.next()) {  // Loop to handle multiple rows
                 Subscription subscription = mapResultSetToSubscription(rs);
-                subscriptionMap.put(subscription.getId(),subscription);
+                subscriptionMap.put(subscription.getId(), subscription);
             }
+
             return subscriptionMap;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
+
     @Override
     public Boolean acceptSubscription(Subscription subscription){
         try{
-            String sql = "UPDATE subscriptions SET accepted = 1 WHERE id = ?";
+            String sql = "UPDATE subscriptions SET accepted = true WHERE id = ?";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setObject(1, subscription.getId());
-            int success = statement.executeUpdate();
-            if(success > 0){
-                new JMailer().sendEmail("Reservation Has Been Accepted!",MailMsg.reservationAcceptedEmail(subscription),subscription.getMember().getEmail());
-            }
+             statement.executeUpdate();
+             new JMailer().sendEmail("Reservation Has Been Accepted!",MailMsg.reservationAcceptedEmail(subscription),subscription.getMember().getEmail());
             return true;
         } catch (Exception e) {
             System.out.println("error to accept subscription" + e.getMessage());
@@ -135,9 +138,7 @@ public class SubscriptionImpl implements SubscriptionRepository {
             }
 
               serviceStatement.executeBatch();
-            if(rs.next()){
-                new JMailer().sendEmail("Reservation of co-working space", MailMsg.reservationRefusal(subscription),subscription.getMember().getEmail());
-            }
+                new JMailer().sendEmail("Reservation of co-working space", MailMsg.reservationConfirmation(subscription),subscription.getMember().getEmail());
             return true;
 
         } catch (Exception e) {
@@ -159,9 +160,7 @@ public class SubscriptionImpl implements SubscriptionRepository {
             PreparedStatement deleteSubscriptionStatement = connection.prepareStatement(deleteSubscriptionSql);
             deleteSubscriptionStatement.setObject(1, subscription.getId());
             int affectedRows = deleteSubscriptionStatement.executeUpdate();
-            if(affectedRows > 0){
-                new JMailer().sendEmail("Reservation of co-working space", MailMsg.reservationConfirmation(subscription),subscription.getMember().getEmail());
-            }
+            new JMailer().sendEmail("Reservation of co-working space", MailMsg.reservationConfirmation(subscription),subscription.getMember().getEmail());
             return affectedRows > 0;
         } catch (Exception e) {
             e.printStackTrace();
@@ -181,7 +180,7 @@ public class SubscriptionImpl implements SubscriptionRepository {
                 FROM subscriptions
                 JOIN spaces ON subscriptions.space_id = spaces.id
                 JOIN members ON subscriptions.member_id = members.id
-                JOIN managers ON spaces.managers_id = managers.id
+                JOIN managers ON spaces.manager_id = managers.id
                 JOIN subscription_services ON subscriptions.id = subscription_services.subscription_id
                 JOIN services ON subscription_services.service_id = services.id 
                  WHERE subscriptions.member_id  = ? AND subscriptions.space_id = ?;
@@ -190,8 +189,11 @@ public class SubscriptionImpl implements SubscriptionRepository {
             statement.setObject(1, subscription.getMember().getId());
             statement.setObject(2, subscription.getSpace().getId());
             ResultSet rs = statement.executeQuery();
-            Subscription subscriptionfound = mapResultSetToSubscription(rs);
-            return Optional.of(subscriptionfound);
+            if (rs.next()) {
+                Subscription subscriptionfound = mapResultSetToSubscription(rs);
+                return Optional.of(subscriptionfound);
+            }
+
         } catch (SQLException e) {
             System.out.println("error to found member space " + e.getMessage());
         }
@@ -280,7 +282,7 @@ public class SubscriptionImpl implements SubscriptionRepository {
         member.setId(UUID.fromString(rs.getString("member_id")));
         member.setName(rs.getString("member_name"));
         member.setEmail(rs.getString("email"));
-        member.setPhoneNumber(rs.getString("phone_number"));
+        member.setPhoneNumber(rs.getString("phoneNumber"));
 
         subscription.setMember(member);
 

@@ -25,10 +25,10 @@ public class SpaceDetailsUI {
         int choice = 0 ;
         do{
 
-            System.out.println("\n===== Welcome "+ memberAuth.getName()+"! to 🏢 Spaces Discovering 🏢 =====");
-            System.out.println("➔ [1] 🏢 Reserve this Space ");
-            System.out.println("➔ [2] 🔍 show feedbacks ");
-            System.out.println("➔ [3] 🚪 write a feedback");
+            System.out.println("\n===== Welcome "+ memberAuth.getName()+"! to 🏢 Space " + spaceDetails.getName()+"=====");
+            System.out.println("➔ [1] 🏢 Reserve This Space");
+            System.out.println("➔ [2] 📝 Show Feedbacks");
+            System.out.println("➔ [3] ✍️ Write a Feedback");
             System.out.println("➔ [4] 🚪 Exit");
             choice = ViewUtility.enterChoice(choice);
             switch(choice){
@@ -36,9 +36,10 @@ public class SpaceDetailsUI {
                     handleReserveSpace();
                     break;
                 case 2:
-
+                    handleShowFeedback();
                     break;
                 case 3:
+                    handleWriteFeedback();
                     break;
                 default:
                     System.out.println("❗ Invalid choice. Please select a valid option from the menu.");
@@ -49,30 +50,44 @@ public class SpaceDetailsUI {
     private void handleWriteFeedback() {
         System.out.println("\n===== 🚪 Write Your Feedback =====");
 
-        // Get the feedback comments from the user
         System.out.print("➔ Enter your feedback comment: ");
         String comment = scanner.nextLine();
 
-        // Validate the comment (you can add more validation if needed)
         if (comment.trim().isEmpty()) {
             System.out.println("❗ Feedback comment cannot be empty.");
             return;
         }
 
-        // Collect feedback information
         Feedback feedback = new Feedback();
         feedback.setComment(comment);
         feedback.setMember(memberAuth);
         feedback.setSpace(spaceDetails);
 
-        // Use the feedbackController to submit the feedback
         boolean success = feedbackController.addFeedback(feedback);
 
-        // Inform the user of the result
         if (success) {
             System.out.println("✅ Your feedback has been submitted successfully.");
         } else {
             System.out.println("❗ There was an error submitting your feedback. Please try again later.");
+        }
+    }
+
+    private void handleShowFeedback() {
+        System.out.println("\n===== 🔍 Show Feedbacks =====");
+
+        Map<UUID, Feedback> feedbackMap = feedbackController.getFeedbackForSpace(spaceDetails.getId());
+
+        if (feedbackMap.isEmpty()) {
+            System.out.println("🚫 No feedback available for this space yet.");
+            return;
+        }
+
+        System.out.println("📋 Feedback for " + spaceDetails.getName() + ":");
+        int index = 1;
+        for (Feedback feedback : feedbackMap.values()) {
+            System.out.println(" " + index++ + ". Comment: " + feedback.getComment());
+            System.out.println("    Member: " + feedback.getMember().getName());
+            System.out.println("    --------------------");
         }
     }
 
@@ -88,7 +103,6 @@ public class SpaceDetailsUI {
             durationType = scanner.nextLine().toLowerCase();
         }
 
-        // Validate duration
         System.out.print("➔ How many " + durationType + "(s) do you want to reserve? ");
         int duration = 0;
         while (true) {

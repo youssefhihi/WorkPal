@@ -1,5 +1,6 @@
 package com.workPal.repositories.interfaces;
 
+import com.workPal.model.Manager;
 import com.workPal.model.Member;
 import com.workPal.model.Space;
 import com.workPal.model.Subscription;
@@ -15,7 +16,7 @@ public interface SubscriptionRepository {
     Map<UUID, Space> getSpaceSubscription(Space space);
     Optional<Subscription> getMemberSpace(Subscription subscription);
     Map<UUID, Subscription> getAll();
-    Map<UUID, Subscription> getSubscriptionNotAccepted();
+    Map<UUID, Subscription> getSubscriptionNotAccepted(Manager manager);
     Boolean acceptSubscription(Subscription subscription);
 
 

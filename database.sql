@@ -102,4 +102,19 @@ CREATE TABLE subscription_services (
 ALTER TABLE subscriptions
 ADD COLUMN accepted BOOLEAN DEFAULT FALSE;
 
+ALTER TABLE spaces
+ADD COLUMN manager_id UUID;
+
+ALTER TABLE spaces
+ADD CONSTRAINT fk_manager
+FOREIGN KEY (manager_id) REFERENCES managers(id);
+
+CREATE TABLE feedbacks (
+    id UUID PRIMARY KEY DEFAULT  gen_random_uuid(),
+    comment TEXT NOT NULL,
+    member_id UUID NOT NULL,
+    space_id UUID NOT NULL,
+    FOREIGN KEY (member_id) REFERENCES members(id) ON DELETE CASCADE,
+    FOREIGN KEY (space_id) REFERENCES spaces(id) ON DELETE CASCADE
+);
 
